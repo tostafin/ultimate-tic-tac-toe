@@ -54,10 +54,6 @@ public class Board extends Application {
                                 buttons[x][y].getStyleClass().add("button-background-color");
                             }
                         }
-//                        int xBigField = finalI / this.smallFieldSize;
-//                        int yBigField = finalJ / this.smallFieldSize;
-//                        int xSmallField = finalI % this.smallFieldSize;
-//                        int ySmallField = finalJ % this.smallFieldSize;
                         String currWinner = board.placeMark(finalI / this.smallFieldSize, finalJ / this.smallFieldSize, finalI % this.smallFieldSize, finalJ % this.smallFieldSize,
                                 this.currMark);
 
