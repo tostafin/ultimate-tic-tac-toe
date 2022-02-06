@@ -33,26 +33,31 @@ public class Board extends Application {
             for (int i = 0; i < this.boardSize; i++) {
                 for (int j = 0; j < this.boardSize; j++) {
                     Button button = new Button();
-                    button.getStyleClass().add("mark-button");
+                    button.getStyleClass().addAll("mark-button", "button-background-color");
                     int finalI = i;
                     int finalJ = j;
                     this.buttons[i][j] = button;
                     gridPane.add(button, i, j, 1, 1);
                     this.styleButtons(button, i, j);
                     button.setOnAction(event -> {
-//                        for (int x = 0; x < this.boardSize; x++) {
-//                            for (int y = 0; y < this.boardSize; y++) {
-//                                buttons[x][y].setStyle("-fx-background-color: lightgrey");
-//                            }
-//                        }
-                        String currWinner = board.placeMark(finalI / this.smallFieldSize,
-                                finalJ / this.smallFieldSize, finalI % this.smallFieldSize,
-                                finalJ % this.smallFieldSize, this.currMark);
+                        for (int x = 0; x < this.boardSize; x++) {
+                            for (int y = 0; y < this.boardSize; y++) {
+                                buttons[x][y].getStyleClass().removeAll("button-available-positions-x");
+                                buttons[x][y].getStyleClass().removeAll("button-available-positions-o");
+                                buttons[x][y].getStyleClass().add("button-background-color");
+                            }
+                        }
+                        int xBigField = finalI / this.smallFieldSize;
+                        int yBigField = finalJ / this.smallFieldSize;
+                        int xSmallField = finalI % this.smallFieldSize;
+                        int ySmallField = finalJ % this.smallFieldSize;
+                        String currWinner = board.placeMark(xBigField, yBigField, xSmallField, ySmallField,
+                                this.currMark);
 
                         this.playersMoves.getChildren().add(
-                                new Text(currMark + " in big field (" + finalI / this.smallFieldSize +
-                                        ", " + finalJ / this.smallFieldSize + "), in small field (" +
-                                        finalI % this.smallFieldSize + ", " + finalJ % this.smallFieldSize + ")."));
+                                new Text(currMark + " in big field (" + xBigField + ", " + yBigField +
+                                        "), in small field (" +
+                                        xSmallField + ", " + ySmallField + ")."));
 
                         if (Objects.equals(currWinner, "X") || Objects.equals(currWinner, "O") ||
                                 Objects.equals(currWinner, "D")) {
@@ -77,16 +82,30 @@ public class Board extends Application {
                         if (Objects.equals(this.currMark, "O")) this.currMark = "X";
                         else this.currMark = "O";
 
-//                        if (!Objects.equals(board.getWinnerInSmallField
-//                                (finalI % this.smallFieldSize, finalJ % this.smallFieldSize), "")) {
-//                            for (int x = 0; x < this.boardSize; x++) {
-//                                for (int y = 0; y < this.boardSize; y++) {
-//                                    if (Objects.equals(this.currMark, "O")) {
-//                                        buttons[x][y].setStyle("-fx-background-color: blue");
-//                                    } else buttons[x][y].setStyle("-fx-background-color: red");
-//                                }
-//                            }
-//                        }
+                        if (Objects.equals(board.getWinnerInSmallField
+                                (xBigField, yBigField), "")) {
+                            for (int x = xSmallField * 3; x < xSmallField * 3 + this.smallFieldSize; x++) {
+                                for (int y = ySmallField * 3; y < ySmallField * 3 + this.smallFieldSize; y++) {
+                                    buttons[x][y].getStyleClass().removeAll("button-background-color");
+                                    if (Objects.equals(this.currMark, "O")) {
+                                        buttons[x][y].getStyleClass().add("button-available-positions-o");
+                                    } else {
+                                        buttons[x][y].getStyleClass().add("button-available-positions-x");
+                                    }
+                                }
+                            }
+                        } else {
+                            for (int x = 0; x < this.boardSize; x++) {
+                                for (int y = 0; y < this.boardSize; y++) {
+                                    buttons[x][y].getStyleClass().removeAll("button-background-color");
+                                    if (Objects.equals(this.currMark, "O")) {
+                                        buttons[x][y].getStyleClass().add("button-available-positions-o");
+                                    } else {
+                                        buttons[x][y].getStyleClass().add("button-available-positions-x");
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
             }

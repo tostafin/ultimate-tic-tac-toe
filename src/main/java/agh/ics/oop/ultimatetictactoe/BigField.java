@@ -26,21 +26,21 @@ public class BigField {
     public String placeMark(int fieldRow, int fieldCol, int i, int j, String currMark) {
         this.board[fieldRow][fieldCol].placeMark(i, j, currMark);
         String smallFieldWinner = this.board[fieldRow][fieldCol].getWinner();
-        System.out.println(smallFieldWinner + "AAAAAAAAAAA");
+//        System.out.println(smallFieldWinner + "AAAAAAAAAAA");
         if (Objects.equals(smallFieldWinner, currMark) || Objects.equals(smallFieldWinner, "D")) {
             this.marksPlaced++;
             String bigFieldWinner = this.checkForWin(fieldRow, fieldCol, currMark);
             this.winner = bigFieldWinner;
             if (Objects.equals(bigFieldWinner, currMark)) {
-                System.out.println("XXX");
+//                System.out.println("XXX");
                 return "The winner is " + currMark + "!";
             }
             else if (Objects.equals(bigFieldWinner, "D")) {
-                System.out.println("YYY");
+//                System.out.println("YYY");
                 return "It's a draw!";
             }
             else {
-                System.out.println("ZZZ");
+//                System.out.println("ZZZ");
                 return smallFieldWinner;
             }
         }

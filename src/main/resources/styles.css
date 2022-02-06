@@ -2,6 +2,18 @@
     -fx-border-color: black;
 }
 
+.button-background-color {
+    -fx-background-color: rgba(81, 113, 110, 0.09);
+}
+
+.button-available-positions-x {
+    -fx-background-color: rgba(73, 175, 165, 0.5);
+}
+
+.button-available-positions-o {
+    -fx-background-color: rgba(233, 50, 59, 0.5);
+}
+
 .button-x {
     -fx-text-fill: blue;
 }
