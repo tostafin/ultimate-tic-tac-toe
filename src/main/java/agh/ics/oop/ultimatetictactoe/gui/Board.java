@@ -4,17 +4,17 @@ import agh.ics.oop.ultimatetictactoe.BigField;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Board extends Application {
@@ -23,6 +23,7 @@ public class Board extends Application {
     private final Button[][] buttons = new Button[this.boardSize][this.boardSize];
     private final VBox playersMoves = new VBox();
     private String currMark = "X";
+    List<int[]> buttonsToDisable = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -40,6 +41,11 @@ public class Board extends Application {
                     gridPane.add(button, i, j, 1, 1);
                     this.styleButtons(button, i, j);
                     button.setOnAction(event -> {
+                        for (int[] t : this.buttonsToDisable) {
+                            this.buttons[t[0]][t[1]].setDisable(false);
+                        }
+                        this.buttonsToDisable.clear();
+
                         for (int x = 0; x < this.boardSize; x++) {
                             for (int y = 0; y < this.boardSize; y++) {
                                 buttons[x][y].getStyleClass().removeAll("button-available-positions-x");
@@ -51,13 +57,16 @@ public class Board extends Application {
                         int yBigField = finalJ / this.smallFieldSize;
                         int xSmallField = finalI % this.smallFieldSize;
                         int ySmallField = finalJ % this.smallFieldSize;
+                        System.out.println("AAA");
+                        System.out.println(finalI + " " + finalJ);
+                        System.out.println("BBB");
                         String currWinner = board.placeMark(xBigField, yBigField, xSmallField, ySmallField,
                                 this.currMark);
 
                         this.playersMoves.getChildren().add(
-                                new Text(currMark + " in big field (" + xBigField + ", " + yBigField +
+                                new Text(currMark + " in big field (" + yBigField + ", " + xBigField +
                                         "), in small field (" +
-                                        xSmallField + ", " + ySmallField + ")."));
+                                        ySmallField + ", " + xSmallField + ")."));
 
                         if (Objects.equals(currWinner, "X") || Objects.equals(currWinner, "O") ||
                                 Objects.equals(currWinner, "D")) {
@@ -83,24 +92,43 @@ public class Board extends Application {
                         else this.currMark = "O";
 
                         if (Objects.equals(board.getWinnerInSmallField
-                                (xBigField, yBigField), "")) {
-                            for (int x = xSmallField * 3; x < xSmallField * 3 + this.smallFieldSize; x++) {
-                                for (int y = ySmallField * 3; y < ySmallField * 3 + this.smallFieldSize; y++) {
-                                    buttons[x][y].getStyleClass().removeAll("button-background-color");
-                                    if (Objects.equals(this.currMark, "O")) {
+                                (ySmallField, xSmallField), "")) {
+                            System.out.println("SUPER");
+                            System.out.println(board.getWinnerInSmallField
+                                    (yBigField, xBigField));
+                            if (Objects.equals(this.currMark, "O")) {
+                                int xAvailableSquare = xSmallField * 3;
+                                int yAvailableSquare = ySmallField * 3;
+                                this.checkAvailableMoves(xAvailableSquare, yAvailableSquare);
+                                for (int x = xAvailableSquare; x < xAvailableSquare + this.smallFieldSize; x++) {
+                                    for (int y = yAvailableSquare; y < yAvailableSquare + this.smallFieldSize; y++) {
+                                        buttons[x][y].getStyleClass().removeAll("button-background-color");
                                         buttons[x][y].getStyleClass().add("button-available-positions-o");
-                                    } else {
+                                    }
+                                }
+                            } else {
+                                for (int x = xSmallField * 3; x < xSmallField * 3 + this.smallFieldSize; x++) {
+                                    for (int y = ySmallField * 3; y < ySmallField * 3 + this.smallFieldSize; y++) {
+                                        buttons[x][y].getStyleClass().removeAll("button-background-color");
                                         buttons[x][y].getStyleClass().add("button-available-positions-x");
                                     }
                                 }
                             }
+
                         } else {
-                            for (int x = 0; x < this.boardSize; x++) {
-                                for (int y = 0; y < this.boardSize; y++) {
-                                    buttons[x][y].getStyleClass().removeAll("button-background-color");
-                                    if (Objects.equals(this.currMark, "O")) {
+                            System.out.println(board.getWinnerInSmallField
+                                    (yBigField, xBigField));
+                            if (Objects.equals(this.currMark, "O")) {
+                                for (int x = 0; x < this.boardSize; x++) {
+                                    for (int y = 0; y < this.boardSize; y++) {
+                                        buttons[x][y].getStyleClass().removeAll("button-background-color");
                                         buttons[x][y].getStyleClass().add("button-available-positions-o");
-                                    } else {
+                                    }
+                                }
+                            } else {
+                                for (int x = 0; x < this.boardSize; x++) {
+                                    for (int y = 0; y < this.boardSize; y++) {
+                                        buttons[x][y].getStyleClass().removeAll("button-background-color");
                                         buttons[x][y].getStyleClass().add("button-available-positions-x");
                                     }
                                 }
@@ -157,6 +185,17 @@ public class Board extends Application {
     public void disableButtons(int x, int y) {
         for (int i = x; i < x + this.smallFieldSize; i++) {
             for (int j = y; j < y + this.smallFieldSize; j++) this.buttons[i][j].setDisable(true);
+        }
+    }
+
+    public void checkAvailableMoves(int x, int y) {
+        for (int i = 0; i < this.boardSize; i++) {
+            for (int j = 0; j < this.boardSize; j++) {
+                if (!(this.buttons[i][j].isDisable()) && !(i >= x && i < x + this.smallFieldSize && j >= y && j < y + this.smallFieldSize)) {
+                    this.buttonsToDisable.add(new int[]{i, j});
+                    this.buttons[i][j].setDisable(true);
+                }
+            }
         }
     }
 
