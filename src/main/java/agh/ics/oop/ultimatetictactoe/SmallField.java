@@ -58,6 +58,6 @@ public class SmallField {
 
         if (this.marksPlaced == Math.pow(this.boardSize, 2) - 1) return "D";
 
-        return null;
+        return "";
     }
 }

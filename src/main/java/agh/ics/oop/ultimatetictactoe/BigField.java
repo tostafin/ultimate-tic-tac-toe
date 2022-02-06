@@ -6,7 +6,8 @@ public class BigField {
     private final SmallField[][] board;
     private String winner = "";
     private final int boardSize = 3;
-    private String currMark = "X";
+    private String currMark = "O";
+    private int marksPlaced = 0;
 
     public BigField() {
         this.board = new SmallField[this.boardSize][this.boardSize];
@@ -23,13 +24,30 @@ public class BigField {
         return this.currMark;
     }
 
-    public void placeMark(int fieldRow, int fieldCol, int i, int j) {
+    public String placeMark(int fieldRow, int fieldCol, int i, int j) {
         if (Objects.equals(this.currMark, "O")) this.currMark = "X";
         else this.currMark = "O";
         this.board[fieldRow][fieldCol].placeMark(i, j, this.currMark);
-        if (!Objects.equals(this.board[fieldRow][fieldCol].getWinner(), null)) {
-            if (!Objects.equals(this.checkForWin(fieldRow, fieldCol), null)) this.winner = this.currMark;
+        String smallFieldWinner = this.board[fieldRow][fieldCol].getWinner();
+        System.out.println(smallFieldWinner);
+        if (Objects.equals(smallFieldWinner, this.currMark)) {
+            System.out.println("CCC");
+            this.marksPlaced++;
+            String bigFieldWinner = this.checkForWin(fieldRow, fieldCol);
+            if (Objects.equals(bigFieldWinner, this.currMark)) {
+                System.out.println("XXX");
+                return "The winner is " + this.currMark + "!";
+            }
+            else if (Objects.equals(bigFieldWinner, "D")) {
+                System.out.println("YYY");
+                return "It's a draw!";
+            }
+            else {
+                System.out.println("ZZZ");
+                return smallFieldWinner;
+            }
         }
+        return null;
     }
 
     public String checkForWin(int i, int j) {
@@ -60,6 +78,9 @@ public class BigField {
                 if (k == this.boardSize - 1) return this.currMark;
             }
         }
-        return null;
+
+        if (this.marksPlaced == Math.pow(this.boardSize, 2) - 1) return "D";
+
+        return "";
     }
 }
