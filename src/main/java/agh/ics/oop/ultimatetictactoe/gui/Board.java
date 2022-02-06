@@ -5,10 +5,12 @@ import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -27,6 +29,7 @@ public class Board extends Application {
         try {
             BigField board = new BigField();
             GridPane gridPane = new GridPane();
+            gridPane.setAlignment(Pos.CENTER);
             for (int i = 0; i < this.boardSize; i++) {
                 for (int j = 0; j < this.boardSize; j++) {
                     Button button = new Button();
@@ -57,13 +60,17 @@ public class Board extends Application {
                                 finalJ / this.smallFieldSize, finalI % this.smallFieldSize,
                                 finalJ % this.smallFieldSize);
                         if (Objects.equals(currWinner, "X") || Objects.equals(currWinner, "O")) {
-                            Text winnerText = new Text(currWinner);
-                            winnerText.setFont(new Font(125.0));
-                            System.out.println((finalI - (finalI % this.smallFieldSize)));
-                            gridPane.add(winnerText, finalI - (finalI % this.smallFieldSize),
-                                    finalI - (finalI % this.smallFieldSize), 3, 3);
-                            GridPane.setHalignment(winnerText, HPos.CENTER);
-                            this.disableButtons(finalI - (finalI % this.smallFieldSize));
+                            this.disableSmallField(currWinner, finalI, gridPane);
+                        }
+                        else if (currWinner != null) {
+                            this.disableSmallField(board.getWinner(), finalI, gridPane);
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Game over");
+                            alert.setHeaderText("The game is over!");
+                            alert.setContentText(currWinner);
+                            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                            alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+                            alert.showAndWait();
                         }
                         buttons[finalI][finalJ].setText(board.getCurrMark());
                         buttons[finalI][finalJ].setDisable(true);
@@ -76,18 +83,24 @@ public class Board extends Application {
             HBox hBox = new HBox(gridPane, playersMoves);
             hBox.setAlignment(Pos.CENTER);
             hBox.setSpacing(50.0);
-            Label label = new Label(this.winner);
-            VBox vBox = new VBox(hBox, label);
-            vBox.setAlignment(Pos.CENTER);
-            vBox.setSpacing(50.0);
 
-            Scene scene = new Scene(vBox, 1000.0, 1000.0);
+            Scene scene = new Scene(hBox, 1000.0, 1000.0);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Ultimate Tic Tac Toe");
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void disableSmallField(String currWinner, int finalI, GridPane gridPane) {
+        Text winnerText = new Text(currWinner);
+        winnerText.setFont(new Font(125.0));
+        System.out.println((finalI - (finalI % this.smallFieldSize)));
+        gridPane.add(winnerText, finalI - (finalI % this.smallFieldSize),
+                finalI - (finalI % this.smallFieldSize), 3, 3);
+        GridPane.setHalignment(winnerText, HPos.CENTER);
+        this.disableButtons(finalI - (finalI % this.smallFieldSize));
     }
 
     public void disableButtons(int leftCorner) {

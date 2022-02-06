@@ -34,6 +34,7 @@ public class BigField {
             System.out.println("CCC");
             this.marksPlaced++;
             String bigFieldWinner = this.checkForWin(fieldRow, fieldCol);
+            this.winner = bigFieldWinner;
             if (Objects.equals(bigFieldWinner, this.currMark)) {
                 System.out.println("XXX");
                 return "The winner is " + this.currMark + "!";
