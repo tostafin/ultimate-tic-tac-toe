@@ -25,7 +25,6 @@ public class SmallField {
         this.board[i][j] = mark;
         this.marksPlaced++;
         this.winner = this.checkForWin(i, j, mark);
-        System.out.println(this.winner);
     }
 
     public String checkForWin(int i, int j, String mark) {

@@ -2,6 +2,7 @@ package agh.ics.oop.ultimatetictactoe.gui;
 
 import agh.ics.oop.ultimatetictactoe.BigField;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -53,20 +54,17 @@ public class Board extends Application {
                                 buttons[x][y].getStyleClass().add("button-background-color");
                             }
                         }
-                        int xBigField = finalI / this.smallFieldSize;
-                        int yBigField = finalJ / this.smallFieldSize;
-                        int xSmallField = finalI % this.smallFieldSize;
-                        int ySmallField = finalJ % this.smallFieldSize;
-                        System.out.println("AAA");
-                        System.out.println(finalI + " " + finalJ);
-                        System.out.println("BBB");
-                        String currWinner = board.placeMark(xBigField, yBigField, xSmallField, ySmallField,
+//                        int xBigField = finalI / this.smallFieldSize;
+//                        int yBigField = finalJ / this.smallFieldSize;
+//                        int xSmallField = finalI % this.smallFieldSize;
+//                        int ySmallField = finalJ % this.smallFieldSize;
+                        String currWinner = board.placeMark(finalI / this.smallFieldSize, finalJ / this.smallFieldSize, finalI % this.smallFieldSize, finalJ % this.smallFieldSize,
                                 this.currMark);
 
                         this.playersMoves.getChildren().add(
-                                new Text(currMark + " in big field (" + yBigField + ", " + xBigField +
+                                new Text(currMark + " in big field (" + finalJ / this.smallFieldSize + ", " + finalI / this.smallFieldSize +
                                         "), in small field (" +
-                                        ySmallField + ", " + xSmallField + ")."));
+                                        finalJ % this.smallFieldSize + ", " + finalI % this.smallFieldSize + ")."));
 
                         if (Objects.equals(currWinner, "X") || Objects.equals(currWinner, "O") ||
                                 Objects.equals(currWinner, "D")) {
@@ -80,6 +78,8 @@ public class Board extends Application {
                             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                             alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
                             alert.showAndWait();
+                            Platform.exit();
+                            System.exit(0);
                         }
 
                         buttons[finalI][finalJ].setText(currMark);
@@ -92,23 +92,18 @@ public class Board extends Application {
                         else this.currMark = "O";
 
                         if (Objects.equals(board.getWinnerInSmallField
-                                (ySmallField, xSmallField), "")) {
-                            System.out.println("SUPER");
-                            System.out.println(board.getWinnerInSmallField
-                                    (yBigField, xBigField));
+                                (finalI % this.smallFieldSize, (finalJ % this.smallFieldSize)), "")) {
                             if (Objects.equals(this.currMark, "O")) {
-                                int xAvailableSquare = xSmallField * 3;
-                                int yAvailableSquare = ySmallField * 3;
-                                this.checkAvailableMoves(xAvailableSquare, yAvailableSquare);
-                                for (int x = xAvailableSquare; x < xAvailableSquare + this.smallFieldSize; x++) {
-                                    for (int y = yAvailableSquare; y < yAvailableSquare + this.smallFieldSize; y++) {
+                                this.checkAvailableMoves((finalI % this.smallFieldSize) * 3, (finalJ % this.smallFieldSize) * 3);
+                                for (int x = (finalI % this.smallFieldSize) * 3; x < (finalI % this.smallFieldSize) * 3 + this.smallFieldSize; x++) {
+                                    for (int y = (finalJ % this.smallFieldSize) * 3; y < (finalJ % this.smallFieldSize) * 3 + this.smallFieldSize; y++) {
                                         buttons[x][y].getStyleClass().removeAll("button-background-color");
                                         buttons[x][y].getStyleClass().add("button-available-positions-o");
                                     }
                                 }
                             } else {
-                                for (int x = xSmallField * 3; x < xSmallField * 3 + this.smallFieldSize; x++) {
-                                    for (int y = ySmallField * 3; y < ySmallField * 3 + this.smallFieldSize; y++) {
+                                for (int x = (finalI % this.smallFieldSize) * 3; x < (finalI % this.smallFieldSize) * 3 + this.smallFieldSize; x++) {
+                                    for (int y = (finalJ % this.smallFieldSize) * 3; y < (finalJ % this.smallFieldSize) * 3 + this.smallFieldSize; y++) {
                                         buttons[x][y].getStyleClass().removeAll("button-background-color");
                                         buttons[x][y].getStyleClass().add("button-available-positions-x");
                                     }
@@ -116,8 +111,6 @@ public class Board extends Application {
                             }
 
                         } else {
-                            System.out.println(board.getWinnerInSmallField
-                                    (yBigField, xBigField));
                             if (Objects.equals(this.currMark, "O")) {
                                 for (int x = 0; x < this.boardSize; x++) {
                                     for (int y = 0; y < this.boardSize; y++) {
