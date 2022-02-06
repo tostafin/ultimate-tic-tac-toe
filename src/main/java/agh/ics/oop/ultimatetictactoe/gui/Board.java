@@ -61,11 +61,12 @@ public class Board extends Application {
                                 new Text(board.getCurrMark() + " in big field (" + finalI / this.smallFieldSize +
                                         ", " + finalJ / this.smallFieldSize + "), in small field (" +
                                         finalI % this.smallFieldSize + ", " + finalJ % this.smallFieldSize + ")."));
-                        if (Objects.equals(currWinner, "X") || Objects.equals(currWinner, "O")) {
-                            this.disableSmallField(currWinner, finalI, gridPane);
+                        if (Objects.equals(currWinner, "X") || Objects.equals(currWinner, "O") ||
+                                Objects.equals(currWinner, "D")) {
+                            this.disableSmallField(currWinner, finalI, finalJ, gridPane);
                         }
                         else if (currWinner != null) {
-                            this.disableSmallField(board.getWinner(), finalI, gridPane);
+                            this.disableSmallField(board.getWinner(), finalI, finalJ, gridPane);
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Game over");
                             alert.setHeaderText("The game is over!");
@@ -96,19 +97,19 @@ public class Board extends Application {
         }
     }
 
-    public void disableSmallField(String currWinner, int finalI, GridPane gridPane) {
+    public void disableSmallField(String currWinner, int finalI, int finalJ, GridPane gridPane) {
         Text winnerText = new Text(currWinner);
         winnerText.setFont(new Font(125.0));
         System.out.println((finalI - (finalI % this.smallFieldSize)));
         gridPane.add(winnerText, finalI - (finalI % this.smallFieldSize),
-                finalI - (finalI % this.smallFieldSize), 3, 3);
+                finalJ - (finalJ % this.smallFieldSize), 3, 3);
         GridPane.setHalignment(winnerText, HPos.CENTER);
-        this.disableButtons(finalI - (finalI % this.smallFieldSize));
+        this.disableButtons(finalI - (finalI % this.smallFieldSize), finalJ - (finalJ % this.smallFieldSize));
     }
 
-    public void disableButtons(int leftCorner) {
-        for (int i = leftCorner; i < leftCorner + this.smallFieldSize; i++) {
-            for (int j = leftCorner; j < leftCorner + this.smallFieldSize; j++) this.buttons[i][j].setDisable(true);
+    public void disableButtons(int x, int y) {
+        for (int i = x; i < x + this.smallFieldSize; i++) {
+            for (int j = y; j < y + this.smallFieldSize; j++) this.buttons[i][j].setDisable(true);
         }
     }
 

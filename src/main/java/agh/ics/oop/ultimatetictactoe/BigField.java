@@ -29,8 +29,8 @@ public class BigField {
         else this.currMark = "O";
         this.board[fieldRow][fieldCol].placeMark(i, j, this.currMark);
         String smallFieldWinner = this.board[fieldRow][fieldCol].getWinner();
-        System.out.println(smallFieldWinner);
-        if (Objects.equals(smallFieldWinner, this.currMark)) {
+        System.out.println(smallFieldWinner + "AAAAAAAAAAA");
+        if (Objects.equals(smallFieldWinner, this.currMark) || Objects.equals(smallFieldWinner, "D")) {
             System.out.println("CCC");
             this.marksPlaced++;
             String bigFieldWinner = this.checkForWin(fieldRow, fieldCol);
