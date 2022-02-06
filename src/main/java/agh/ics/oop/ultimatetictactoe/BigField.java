@@ -6,8 +6,11 @@ public class BigField {
     private final SmallField[][] board;
     private String winner = "";
     private final int boardSize = 3;
-    private String currMark = "O";
     private int marksPlaced = 0;
+
+    public String getWinnerInSmallField(int i, int j) {
+        return this.board[i][j].getWinner();
+    }
 
     public BigField() {
         this.board = new SmallField[this.boardSize][this.boardSize];
@@ -20,24 +23,17 @@ public class BigField {
         return this.winner;
     }
 
-    public String getCurrMark() {
-        return this.currMark;
-    }
-
-    public String placeMark(int fieldRow, int fieldCol, int i, int j) {
-        if (Objects.equals(this.currMark, "O")) this.currMark = "X";
-        else this.currMark = "O";
-        this.board[fieldRow][fieldCol].placeMark(i, j, this.currMark);
+    public String placeMark(int fieldRow, int fieldCol, int i, int j, String currMark) {
+        this.board[fieldRow][fieldCol].placeMark(i, j, currMark);
         String smallFieldWinner = this.board[fieldRow][fieldCol].getWinner();
         System.out.println(smallFieldWinner + "AAAAAAAAAAA");
-        if (Objects.equals(smallFieldWinner, this.currMark) || Objects.equals(smallFieldWinner, "D")) {
-            System.out.println("CCC");
+        if (Objects.equals(smallFieldWinner, currMark) || Objects.equals(smallFieldWinner, "D")) {
             this.marksPlaced++;
-            String bigFieldWinner = this.checkForWin(fieldRow, fieldCol);
+            String bigFieldWinner = this.checkForWin(fieldRow, fieldCol, currMark);
             this.winner = bigFieldWinner;
-            if (Objects.equals(bigFieldWinner, this.currMark)) {
+            if (Objects.equals(bigFieldWinner, currMark)) {
                 System.out.println("XXX");
-                return "The winner is " + this.currMark + "!";
+                return "The winner is " + currMark + "!";
             }
             else if (Objects.equals(bigFieldWinner, "D")) {
                 System.out.println("YYY");
@@ -51,32 +47,32 @@ public class BigField {
         return null;
     }
 
-    public String checkForWin(int i, int j) {
+    public String checkForWin(int i, int j, String currMark) {
         // check rows
         for (int k = 0; k < this.boardSize; k++) {
-            if (!Objects.equals(this.board[i][k].getWinner(), this.currMark)) break;
-            if (k == this.boardSize - 1) return this.currMark;
+            if (!Objects.equals(this.board[i][k].getWinner(), currMark)) break;
+            if (k == this.boardSize - 1) return currMark;
         }
 
         // check columns
         for (int k = 0; k < this.boardSize; k++) {
-            if (!Objects.equals(this.board[k][j].getWinner(), this.currMark)) break;
-            if (k == this.boardSize - 1) return this.currMark;
+            if (!Objects.equals(this.board[k][j].getWinner(), currMark)) break;
+            if (k == this.boardSize - 1) return currMark;
         }
 
         // check upper-left lower-right diagonal
         if (i == j) {
             for (int k = 0; k < this.boardSize; k++) {
-                if (!Objects.equals(this.board[k][k].getWinner(), this.currMark)) break;
-                if (k == this.boardSize - 1) return this.currMark;
+                if (!Objects.equals(this.board[k][k].getWinner(), currMark)) break;
+                if (k == this.boardSize - 1) return currMark;
             }
         }
 
         // check upper-right lower-left diagonal
         if (i + j == this.boardSize - 1) {
             for (int k = 0; k < this.boardSize; k++) {
-                if (!Objects.equals(this.board[k][this.boardSize - 1 - k].getWinner(), this.currMark)) break;
-                if (k == this.boardSize - 1) return this.currMark;
+                if (!Objects.equals(this.board[k][this.boardSize - 1 - k].getWinner(), currMark)) break;
+                if (k == this.boardSize - 1) return currMark;
             }
         }
 

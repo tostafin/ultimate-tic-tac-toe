@@ -1,0 +1,23 @@
+.mark-button {
+    -fx-border-color: black;
+}
+
+.button-x {
+    -fx-text-fill: blue;
+}
+
+.button-o {
+    -fx-text-fill: red;
+}
+
+.button-lower-border {
+    -fx-border-width: 1 1 5 1;
+}
+
+.button-right-border {
+    -fx-border-width: 1 5 1 1;
+}
+
+.button-right-and-lower-border {
+    -fx-border-width: 1 5 5 1;
+}
