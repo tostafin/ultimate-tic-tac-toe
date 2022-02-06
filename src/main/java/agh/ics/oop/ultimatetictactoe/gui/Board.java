@@ -3,15 +3,12 @@ package agh.ics.oop.ultimatetictactoe.gui;
 import agh.ics.oop.ultimatetictactoe.BigField;
 import javafx.application.Application;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -22,7 +19,8 @@ public class Board extends Application {
     private String winner = "";
     private final int boardSize = 9;
     private final int smallFieldSize = 3;
-    Button[][] buttons = new Button[this.boardSize][this.boardSize];
+    private final Button[][] buttons = new Button[this.boardSize][this.boardSize];
+    private final VBox playersMoves = new VBox();
 
     @Override
     public void start(Stage primaryStage) {
@@ -38,7 +36,7 @@ public class Board extends Application {
                     button.setMaxWidth(50.0);
                     button.setMinHeight(50.0);
                     button.setPrefHeight(50.0);
-                    button.setMaxHeight(30.0);
+                    button.setMaxHeight(50.0);
                     int finalI = i;
                     int finalJ = j;
 
@@ -59,6 +57,10 @@ public class Board extends Application {
                         String currWinner = board.placeMark(finalI / this.smallFieldSize,
                                 finalJ / this.smallFieldSize, finalI % this.smallFieldSize,
                                 finalJ % this.smallFieldSize);
+                        this.playersMoves.getChildren().add(
+                                new Text(board.getCurrMark() + " in big field (" + finalI / this.smallFieldSize +
+                                        ", " + finalJ / this.smallFieldSize + "), in small field (" +
+                                        finalI % this.smallFieldSize + ", " + finalJ % this.smallFieldSize + ")."));
                         if (Objects.equals(currWinner, "X") || Objects.equals(currWinner, "O")) {
                             this.disableSmallField(currWinner, finalI, gridPane);
                         }
@@ -79,11 +81,12 @@ public class Board extends Application {
                     gridPane.add(button, i, j, 1, 1);
                 }
             }
-            Label playersMoves = new Label("List handler");
-            HBox hBox = new HBox(gridPane, playersMoves);
+            Text movesText = new Text("Players' moves:");
+            this.playersMoves.getChildren().add(movesText);
+            HBox hBox = new HBox(gridPane, this.playersMoves);
             hBox.setAlignment(Pos.CENTER);
-            hBox.setSpacing(50.0);
-
+            hBox.setSpacing(10.0);
+            hBox.setFillHeight(false);
             Scene scene = new Scene(hBox, 1000.0, 1000.0);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Ultimate Tic Tac Toe");
