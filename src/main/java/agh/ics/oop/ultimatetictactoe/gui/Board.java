@@ -3,12 +3,12 @@ package agh.ics.oop.ultimatetictactoe.gui;
 import agh.ics.oop.ultimatetictactoe.BigField;
 import javafx.application.Application;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class Board extends Application {
-    private String winner = "";
     private final int boardSize = 9;
     private final int smallFieldSize = 3;
     private final Button[][] buttons = new Button[this.boardSize][this.boardSize];
@@ -76,6 +75,10 @@ public class Board extends Application {
                             alert.showAndWait();
                         }
                         buttons[finalI][finalJ].setText(board.getCurrMark());
+                        if (Objects.equals(board.getCurrMark(), "X")) {
+                            buttons[finalI][finalJ].setStyle("-fx-text-fill: blue");
+                        }
+                        else buttons[finalI][finalJ].setStyle("-fx-text-fill: red");
                         buttons[finalI][finalJ].setDisable(true);
                     });
                     buttons[i][j] = button;
@@ -100,7 +103,8 @@ public class Board extends Application {
     public void disableSmallField(String currWinner, int finalI, int finalJ, GridPane gridPane) {
         Text winnerText = new Text(currWinner);
         winnerText.setFont(new Font(125.0));
-        System.out.println((finalI - (finalI % this.smallFieldSize)));
+        if (Objects.equals(currWinner, "X")) winnerText.setFill(Color.BLUE);
+        else winnerText.setFill(Color.RED);
         gridPane.add(winnerText, finalI - (finalI % this.smallFieldSize),
                 finalJ - (finalJ % this.smallFieldSize), 3, 3);
         GridPane.setHalignment(winnerText, HPos.CENTER);
